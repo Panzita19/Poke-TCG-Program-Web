@@ -1,25 +1,29 @@
 const listaPokemon = document.querySelector("#listaPokemon");
 const botonesHeader = document.querySelectorAll(".btn-header");
-let URL= "https://pokeapi.co/api/v2/pokemon/";
-const TOTAL_POKEMON = 150;
-const CARTAS_POR_SOBRE = 6;
 const progressFill = document.getElementById('progress-fill');
 const progressText = document.getElementById('progress-text');
 const btnAbrir = document.getElementById('btn-abrir');
 const btnIndice = document.getElementById('btn-indice');
 const btnIntercambiar = document.getElementById('btn-intercambiar');
+const modal = document.getElementById('pokemon-modal');
+const closeModal = document.querySelector('.close-modal');
+const barraBusqueda = document.getElementById("barra-busqueda");
+const botonBuscar = document.getElementById("boton-buscar");
 
+const URL = "https://pokeapi.co/api/v2/pokemon/";
+const TOTAL_POKEMON = 150;
+const CARTAS_POR_SOBRE = 6;
 
 let storedCards = JSON.parse(localStorage.getItem('pokemonCards')) || [];
 let pokemonData = [];
+let filtroActivo = "ver-todos";
 
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
 });
 
-
-async function initApp() { //esto es pa probar lo de los sobres
-
+// Función principal de inicialización (osea si es primera vez que usas la app empiezas con 10 cartas desbloqueadas)
+async function initApp() {
     if (storedCards.length === 0) {
         unlockRandomPokemon(10);
     }
@@ -29,19 +33,17 @@ async function initApp() { //esto es pa probar lo de los sobres
     updateProgress();
 }
 
-// Cargar todos los Pokémon
+//cargo los pokemons de la api
 async function loadAllPokemon() {
     try {
         showLoading(true);
         
-        let requests = [];
+        const requests = [];
         for (let i = 1; i <= TOTAL_POKEMON; i++) {
             requests.push(fetch(URL + i).then(res => res.json()));
         }
-        
         pokemonData = await Promise.all(requests);
         
-
         displayPokemonList(pokemonData);
         
     } catch (error) {
@@ -52,35 +54,60 @@ async function loadAllPokemon() {
     }
 }
 
-// Mostrar lista de Pokémon
 function displayPokemonList(pokemons) {
     listaPokemon.innerHTML = '';
     
-    pokemons.forEach(pokemon => {
-        let isUnlocked = storedCards.includes(pokemon.id);
-        let pokemonElement = createPokemonCard(pokemon, isUnlocked);
+    // Aplicar filtros combinados
+    let pokemonsFiltrados = [...pokemons];
+    
+    // Filtrar por tipo si no es "ver-todos"
+    if (filtroActivo !== "ver-todos") {
+        pokemonsFiltrados = pokemonsFiltrados.filter(pokemon => 
+            pokemon.types.some(t => t.type.name.includes(filtroActivo))
+        );
+    }
+    
+    // Filtrar por nombre si hay texto en la búsqueda
+    const textoBusqueda = barraBusqueda.value.toLowerCase();
+    if (textoBusqueda) {
+        pokemonsFiltrados = pokemonsFiltrados.filter(pokemon => 
+            pokemon.name.toLowerCase().includes(textoBusqueda)
+        );
+    }
+    
+    // Mostrar Pokémon filtrados
+    pokemonsFiltrados.forEach(pokemon => {
+        const isUnlocked = storedCards.includes(pokemon.id);
+        const pokemonElement = createPokemonCard(pokemon, isUnlocked);
         listaPokemon.appendChild(pokemonElement);
     });
+    
+    // Mostrar mensaje si no hay resultados
+    if (pokemonsFiltrados.length === 0) {
+        listaPokemon.innerHTML = '<div class="sin-resultados">No se encontraron Pokémon</div>';
+    }
 }
 
-// Crear tarjeta de Pokémon
+//crea los iconos de la pokedex
 function createPokemonCard(pokemon, isUnlocked) {
-    let tipos = pokemon.types.map(type => 
+    const tipos = pokemon.types.map(type => 
         `<p class="${type.type.name} tipo">${type.type.name.toUpperCase()}</p>`
     ).join('');
 
-    let pokeId = pokemon.id.toString().padStart(3,'0');
-    let heightInMeters = pokemon.height / 10;
-    let weightInKg = pokemon.weight / 10;
+    const pokeId = pokemon.id.toString().padStart(3, '0');
+    const heightInMeters = (pokemon.height / 10).toFixed(1);
+    const weightInKg = (pokemon.weight / 10).toFixed(1);
 
-    let card = document.createElement('div');
+    // divide los pokemons en desbloqueados y bloqueados (los bloqueados en blanco y negro)
+    const card = document.createElement('div');
     card.classList.add('pokemon');
     if (!isUnlocked) card.classList.add('locked');
     
+    //coge los datos que necesita de PokeAPI
     card.innerHTML = `
         <p class="pokemon-id-back">#${pokeId}</p>
         <div class="pokemon-imagen">
-            <img src="${pokemon.sprites.front_default}" 
+            <img src="${pokemon.sprites.other['official-artwork'].front_default}" 
                 alt="${pokemon.name}"
                 loading="lazy">
         </div>
@@ -98,41 +125,83 @@ function createPokemonCard(pokemon, isUnlocked) {
         </div>
     `;
     
+    //si esta desbloqueada muestra los datos (peso, tamaño, tipo bla bla bla)
     if (isUnlocked) {
         card.addEventListener('click', () => showPokemonDetails(pokemon));
+        card.style.cursor = 'pointer';
     }
     
     return card;
 }
 
-// Mostrar detalles del Pokémon (osea la carta detallada cuando le hacemos click)
+//los datos de cuando le haces zoom a la carta
 function showPokemonDetails(pokemon) {
+    document.getElementById('modal-pokemon-name').textContent = pokemon.name;
+    document.getElementById('modal-pokemon-id').textContent = `#${pokemon.id.toString().padStart(3, '0')}`;
+    
+    const imgUrl = pokemon.sprites.other['official-artwork'].front_default;
+    const modalImage = document.getElementById('modal-pokemon-image');
+    modalImage.src = imgUrl;
+    modalImage.alt = pokemon.name;
+    
+    const typesContainer = document.getElementById('modal-pokemon-types');
+    typesContainer.innerHTML = pokemon.types.map(type => `
+        <p class="${type.type.name} tipo">${type.type.name.toUpperCase()}</p>
+    `).join('');
+    
+    document.getElementById('modal-pokemon-height').textContent = `${(pokemon.height / 10).toFixed(1)}m`;
+    document.getElementById('modal-pokemon-weight').textContent = `${(pokemon.weight / 10).toFixed(1)}kg`;
+    
+    const statsContainer = document.getElementById('modal-pokemon-stats');
+    statsContainer.innerHTML = pokemon.stats.map(stat => `
+        <div class="stat-item">
+            <span class="stat-name">${stat.stat.name.replace('-', ' ')}</span>
+            <span class="stat-value">${stat.base_stat}</span>
+            <div class="stat-bar">
+                <div class="stat-bar-fill" style="width: ${(stat.base_stat / 255) * 100}%"></div>
+            </div>
+        </div>
+    `).join('');
+    
+    const abilitiesContainer = document.getElementById('modal-pokemon-abilities');
+    abilitiesContainer.innerHTML = pokemon.abilities.map(ability => `
+        <span class="ability">${ability.ability.name.replace('-', ' ')}</span>
+    `).join('');
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
 }
 
+function setupModalEvents() {
+    closeModal.addEventListener('click', () => {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+}
 
+//actualizas la barrita de progreso
 function updateProgress() {
-    let total = storedCards.length;
-    let percentage = (total / TOTAL_POKEMON) * 100;
+    const total = storedCards.length;
+    const percentage = (total / TOTAL_POKEMON) * 100;
     
     progressFill.style.width = `${percentage}%`;
     progressText.textContent = `${total}/${TOTAL_POKEMON}`;
 }
 
-
 function filterPokemonByType(type) {
-    if (type === 'ver-todos') {
-        displayPokemonList(pokemonData);
-    } else {
-        let filtered = pokemonData.filter(pokemon => 
-            pokemon.types.some(t => t.type.name.includes(type))
-        );
-        displayPokemonList(filtered);
-    }
+    filtroActivo = type;
+    displayPokemonList(pokemonData);
 }
 
-
 function openBoosterPack() {
-    let newCards = getRandomNewCards(CARTAS_POR_SOBRE);
+    const newCards = getRandomNewCards(CARTAS_POR_SOBRE);
     
     if (newCards.length === 0) {
         alert('¡Ya tienes todas las cartas!');
@@ -147,14 +216,13 @@ function openBoosterPack() {
     
     localStorage.setItem('pokemonCards', JSON.stringify(storedCards));
     updateProgress();
-    
-    showNewCardsAnimation(newCards);
+    displayPokemonList(pokemonData);
+    alert(`¡Has obtenido ${newCards.length} nuevas cartas!`);
 }
 
-
 function getRandomNewCards(count) {
-    let unlockedIds = new Set(storedCards);
-    let lockedPokemon = pokemonData.filter(p => !unlockedIds.has(p.id));
+    const unlockedIds = new Set(storedCards);
+    const lockedPokemon = pokemonData.filter(p => !unlockedIds.has(p.id));
     
     if (lockedPokemon.length === 0) return [];
     
@@ -162,22 +230,11 @@ function getRandomNewCards(count) {
     return shuffled.slice(0, count).map(p => p.id);
 }
 
-//pongamos aca la animacion de las cartas 
-function showNewCardsAnimation(newCardIds) {
-    // Implementar animación visual (puedes usar CSS o librerías como Anime.js)
-    console.log("Nuevas cartas obtenidas:", newCardIds);
-
-    displayPokemonList(pokemonData);
-    
-    alert(`¡Has obtenido ${newCardIds.length} nuevas cartas!`);
-}
-
-// Desbloquear Pokémon aleatorios (para pruebas)
 function unlockRandomPokemon(count) {
     const newCards = [];
     
     while (newCards.length < count && newCards.length < TOTAL_POKEMON) {
-        let randomId = Math.floor(Math.random() * TOTAL_POKEMON) + 1;
+        const randomId = Math.floor(Math.random() * TOTAL_POKEMON) + 1;
         if (!newCards.includes(randomId) && !storedCards.includes(randomId)) {
             newCards.push(randomId);
         }
@@ -187,6 +244,19 @@ function unlockRandomPokemon(count) {
     localStorage.setItem('pokemonCards', JSON.stringify(storedCards));
 }
 
+function showLoading(show) {
+    if (show) {
+        listaPokemon.innerHTML = '<div class="loading">Cargando Pokémon...</div>';
+    }
+}
+
+function showError() {
+    listaPokemon.innerHTML = '<div class="error">Error al cargar los Pokémon. Intenta recargar la página.</div>';
+}
+
+function filtrarPorNombre() {
+    displayPokemonList(pokemonData); // Esta función ahora maneja todos los filtros
+}
 
 function setupEventListeners() {
     botonesHeader.forEach(boton => {
@@ -198,22 +268,17 @@ function setupEventListeners() {
     btnAbrir.addEventListener('click', openBoosterPack);
     
     btnIndice.addEventListener('click', () => {
+        filtroActivo = "ver-todos";
+        barraBusqueda.value = "";
         displayPokemonList(pokemonData);
     });
     
-    btnIntercambiar.addEventListener('click', () => { //no se como hacer lo de los intercambios xd
+    btnIntercambiar.addEventListener('click', () => {
         alert('Funcionalidad de intercambio en desarrollo');
     });
-}
+    
+    setupModalEvents();
 
-
-function showLoading(show) {
-    if (show) {
-        listaPokemon.innerHTML = '<div class="loading">Cargando Pokémon...</div>';
-    }
-}
-
-
-function showError() {
-    listaPokemon.innerHTML = '<div class="error">Error al cargar los Pokémon. Intenta recargar la página.</div>';
+    barraBusqueda.addEventListener("input", filtrarPorNombre);
+    botonBuscar.addEventListener("click", filtrarPorNombre);
 }
