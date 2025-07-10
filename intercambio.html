@@ -1,11 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Pokédex - Intercambio de Cartas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="intercambio.css">
 </head>
 <body>
-    <h1>INTERCAMBIO</h1>
+    <header class="header-pokedex">
+        <div class="contenedor-busqueda">
+            <input 
+                type="text" 
+                id="barra-busqueda" 
+                placeholder="Buscar Pokémon por nombre..." 
+                class="input-busqueda"
+            >
+            <button id="boton-buscar" class="boton-buscar"></button>
+        </div>
+        <nav class="nav">
+            <ul class="nav-list">
+                <li class="nav-item"><button class="btn btn-header" id="ver-todos">Ver todos</button></li> 
+                <li class="nav-item"><button class="btn btn-header normal" id="normal">Normal</button></li>
+                <li class="nav-item"><button class="btn btn-header fire" id="fire">Fire</button></li>
+                <li class="nav-item"><button class="btn btn-header water" id="water">Water</button></li>
+                <li class="nav-item"><button class="btn btn-header grass" id="grass">Grass</button></li>
+                <li class="nav-item"><button class="btn btn-header electric" id="electric">Electric</button></li>
+                <li class="nav-item"><button class="btn btn-header ice" id="ice">Ice</button></li>
+                <li class="nav-item"><button class="btn btn-header fighting" id="fighting">Fighting</button></li>
+                <li class="nav-item"><button class="btn btn-header poison" id="poison">Poison</button></li>
+                <li class="nav-item"><button class="btn btn-header ground" id="ground">Ground</button></li>
+                <li class="nav-item"><button class="btn btn-header flying" id="flying">Flying</button></li>
+                <li class="nav-item"><button class="btn btn-header psychic" id="psychic">Psychic</button></li>
+                <li class="nav-item"><button class="btn btn-header bug" id="bug">Bug</button></li>
+                <li class="nav-item"><button class="btn btn-header rock" id="rock">Rock</button></li>
+                <li class="nav-item"><button class="btn btn-header ghost" id="ghost">Ghost</button></li>
+                <li class="nav-item"><button class="btn btn-header dragon" id="dragon">Dragon</button></li>
+                <li class="nav-item"><button class="btn btn-header steel" id="steel">Steel</button></li>
+                <li class="nav-item"><button class="btn btn-header fairy" id="fairy">Fairy</button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="intercambio" aria-labelledby="titulo-intercambio">
+            <h2 id="titulo-intercambio">Intercambiar Cartas Pokémon</h2>
+            
+            <section class="usuarios-conectados" aria-labelledby="titulo-usuarios">
+                <h3 id="titulo-usuarios">Usuarios Conectados</h3>
+                <ul id="lista-usuarios" class="lista-usuarios">
+                    <!-- Usuarios se cargarán dinámicamente -->
+                </ul>
+            </section>
+
+            <section class="formulario-intercambio" aria-labelledby="titulo-formulario">
+                <h3 id="titulo-formulario">Seleccionar Cartas para Intercambio</h3>
+                
+                <form id="form-intercambio">
+                    <fieldset>
+                        <legend>Intercambio entre:</legend>
+                        
+                        <label for="usuario-origen">Tu usuario:</label>
+                        <input type="text" id="usuario-origen" value="TuNombre" readonly>
+                        
+                        <label for="usuario-destino">Usuario destino:</label>
+                        <select id="usuario-destino" required>
+                            <option value="">Selecciona un usuario</option>
+                        </select>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Tus cartas disponibles:</legend>
+                        <ul id="tus-cartas" class="lista-cartas">
+                            <!-- Cartas del usuario actual -->
+                        </ul>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Cartas del otro usuario:</legend>
+                        <ul id="cartas-destino" class="lista-cartas">
+                            <!-- Cartas del otro usuario -->
+                        </ul>
+                    </fieldset>
+
+                    <button type="submit" id="boton-intercambiar" disabled>Confirmar Intercambio</button>
+                </form>
+            </section>
+
+            <dialog id="modal-exito">
+                <h3>¡Intercambio completado!</h3>
+                <p>Has intercambiado <span id="carta-tuya"></span> por <span id="carta-otro"></span>.</p>
+                <button id="cerrar-modal">Cerrar</button>
+            </dialog>
+        </section>
+    </main>
+
+    <nav class="bottom-nav">
+        <button class="nav-btn" id="btn-indice">
+            <a href="#gg"> <i class="icon">🏡</i> Inicio </a>
+        </button>
+        <button class="nav-btn" id="btn-indice">
+            <a href="index.html"> <i class="icon">📋</i> Índice </a>
+        </button>
+        <button class="nav-btn" id="btn-abrir">
+            <i class="icon">🎁</i> Abrir
+        </button>
+        <button class="nav-btn" id="btn-intercambiar">
+            <a href="intercambio.html"><i class="icon">🔄</i> Intercambiar </a>
+        </button>
+    </nav>
+    
+    <script src="data/pokemonData.js"></script>
+    <script src="trade.js"></script>
 </body>
 </html>
