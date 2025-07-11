@@ -1,0 +1,281 @@
+:root {
+    --color-primario: rgb(112, 179, 203);
+    --color-secundario: #ffffff;
+    --color-destacado: #e8c32f;
+    --color-texto: #333;
+    --color-fondo: #f5f5f5;
+    --color-borde: #e0e0e0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Rubik', sans-serif;
+    background-color: var(--color-fondo);
+}
+
+.pagina-inicio {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+    color: white;
+}
+
+.cabecera-inicio {
+    padding: 1.5rem;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    width: 180px;
+    margin-bottom: 0.5rem;
+}
+
+.cabecera-inicio h1 {
+    font-size: 1.5rem;
+    color: var(--color-destacado);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.contenido-inicio {
+    flex: 1;
+    padding: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.tarjeta-entrenador {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.perfil-entrenador {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.foto-perfil {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--color-destacado);
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.foto-perfil img {
+    width: 50px;
+    height: auto;
+}
+
+.info-entrenador {
+    margin-left: 1.5rem;
+    color: var(--color-texto);
+}
+
+.info-entrenador h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.3rem;
+    color: var(--color-primario);
+}
+
+#contador-cartas {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.progreso-global {
+    margin-top: 1rem;
+}
+
+.barra-progreso-container {
+    width: 100%;
+    height: 20px;
+    background-color: var(--color-borde);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.barra-progreso {
+    height: 100%;
+    background: linear-gradient(to right, var(--color-destacado), #f8d030);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+#porcentaje-completado {
+    text-align: right;
+    font-size: 0.9rem;
+    color: var(--color-texto);
+}
+
+.acciones-principales {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.boton-accion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.boton-accion img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.boton-accion.principal {
+    background-color: var(--color-destacado);
+    color: var(--color-primario);
+}
+
+.boton-accion.secundario {
+    background-color: white;
+    color: var(--color-secundario);
+    border: 2px solid var(--color-borde);
+}
+
+.boton-accion:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.ultimas-cartas {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.ultimas-cartas h3 {
+    color: var(--color-primario);
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.lista-ultimas-cartas {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+
+.carta-reciente {
+    min-width: 80px;
+    text-align: center;
+}
+
+.carta-reciente img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 0.5rem;
+}
+
+.carta-reciente p {
+    font-size: 0.8rem;
+    color: var(--color-texto);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pie-pagina {
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-contenido {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%;
+}
+
+.modal-contenido p {
+    margin-bottom: 1.5rem;
+    color: var(--color-texto);
+}
+
+.modal-botones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.modal-botones button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#btn-cancelar {
+    background-color: var(--color-borde);
+    color: var(--color-texto);
+}
+
+#btn-confirmar {
+    background-color: var(--color-primario);
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .cabecera-inicio h1 {
+        font-size: 1.3rem;
+    }
+    
+    .foto-perfil {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .info-entrenador h2 {
+        font-size: 1.1rem;
+    }
+}
