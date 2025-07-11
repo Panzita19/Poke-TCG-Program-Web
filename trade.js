@@ -9,6 +9,7 @@ let selectedUserId = null;
 let selectedMyCard = null;
 let selectedTheirCard = null;
 let theirCards = [];
+let storedCards = window.storedCards || JSON.parse(localStorage.getItem('pokemonCards')) || [];
 
 function connectWebSocket() {
   ws = new WebSocket(WEBSOCKET_SERVER_URL);
@@ -141,7 +142,7 @@ document.getElementById('boton-intercambiar').addEventListener('click', function
   if (selectedUserId && selectedMyCard && selectedTheirCard) {
     ws.send(JSON.stringify({
       type: 'proposeTrade',
-      senderId: myId,
+      senderId: myUsername, // Usar el nombre de usuario como identificador
       receiverId: selectedUserId,
       myCardId: selectedMyCard,
       theirCardId: selectedTheirCard,
