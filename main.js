@@ -202,22 +202,96 @@ function filterPokemonByType(type) {
 
 function openBoosterPack() {
     const newCards = getRandomNewCards(CARTAS_POR_SOBRE);
-    
     if (newCards.length === 0) {
         alert('¡Ya tienes todas las cartas!');
         return;
     }
-    
     newCards.forEach(id => {
         if (!storedCards.includes(id)) {
             storedCards.push(id);
         }
     });
-    
     localStorage.setItem('pokemonCards', JSON.stringify(storedCards));
     updateProgress();
     displayPokemonList(pokemonData);
-    alert(`¡Has obtenido ${newCards.length} nuevas cartas!`);
+    showBoosterModal(newCards);
+}
+
+// Modal para mostrar las cartas obtenidas en el sobre
+function showBoosterModal(cardIds) {
+    let modal = document.getElementById('booster-modal');
+    if (!modal) {
+        // Si no existe el div, lo creamos (fallback)
+        modal = document.createElement('div');
+        modal.id = 'booster-modal';
+        modal.className = 'booster-modal';
+        document.body.appendChild(modal);
+    }
+    // Limpiar contenido anterior
+    modal.innerHTML = '';
+
+    // Modal content
+    const content = document.createElement('div');
+    content.className = 'booster-modal-content';
+
+    // Título
+    const title = document.createElement('h2');
+    title.textContent = '¡Nuevas cartas obtenidas!';
+    content.appendChild(title);
+
+    // Vista previa de cartas
+    const preview = document.createElement('div');
+    preview.className = 'booster-cards-preview';
+    cardIds.forEach(id => {
+        const poke = pokemonData.find(p => p.id === id);
+        if (poke) {
+            const card = document.createElement('div');
+            card.className = 'booster-card';
+            card.innerHTML = `
+                <img src="${poke.sprites.other['official-artwork'].front_default}" alt="${poke.name}" loading="lazy">
+                <p class="booster-card-name">${poke.name}</p>
+            `;
+            preview.appendChild(card);
+        }
+    });
+    content.appendChild(preview);
+
+    // Botones
+    const btns = document.createElement('div');
+    btns.className = 'booster-btns';
+
+    const btnAceptar = document.createElement('button');
+    btnAceptar.className = 'booster-btn aceptar';
+    btnAceptar.textContent = 'Aceptar';
+    btnAceptar.onclick = () => {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    };
+
+    const btnAbrirOtro = document.createElement('button');
+    btnAbrirOtro.className = 'booster-btn abrir-otro';
+    btnAbrirOtro.textContent = 'Abrir otro sobre';
+    btnAbrirOtro.onclick = () => {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        setTimeout(() => openBoosterPack(), 200); // Pequeño delay para evitar doble modal
+    };
+
+    btns.appendChild(btnAceptar);
+    btns.appendChild(btnAbrirOtro);
+    content.appendChild(btns);
+
+    // Cerrar modal al hacer click fuera del contenido
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    };
+
+    modal.appendChild(content);
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
 }
 
 function getRandomNewCards(count) {
@@ -277,4 +351,11 @@ function setupEventListeners() {
 
     barraBusqueda.addEventListener("input", filtrarPorNombre);
     botonBuscar.addEventListener("click", filtrarPorNombre);
+}
+// Reinicia la colección de cartas a 0 y actualiza la vista
+function resetColeccion() {
+    storedCards = [];
+    localStorage.setItem('pokemonCards', JSON.stringify(storedCards));
+    updateProgress();
+    displayPokemonList(pokemonData);
 }
