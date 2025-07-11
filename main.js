@@ -15,6 +15,7 @@ const TOTAL_POKEMON = 150;
 const CARTAS_POR_SOBRE = 6;
 
 <<<<<<< HEAD:main.js
+<<<<<<< HEAD:main.js
 window.storedCards = JSON.parse(localStorage.getItem('pokemonCards')) || [];
 window.pokemonData = [];
 let filtroActivo = "ver-todos";
@@ -29,6 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
             loadAllPokemon();
         }
 =======
+=======
+>>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
 let storedCards = JSON.parse(localStorage.getItem('pokemonCards')) || [];
 let pokemonData = [];
 let filtroActivo = "ver-todos";
@@ -52,6 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
             percentage: (storedCards.length / TOTAL_POKEMON) * 100
         };
         updateHomePageProgress(progressData.total, progressData.percentage);
+<<<<<<< HEAD:main.js
+>>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
+=======
 >>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
     }
     
@@ -102,6 +108,9 @@ function displayPokemonList(pokemons) {
     // Aplicar filtros combinados
     let pokemonsFiltrados = [...pokemons];
     
+<<<<<<< HEAD:main.js
+>>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
+=======
 >>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
     // Filtrar por tipo si no es "ver-todos"
     if (filtroActivo !== "ver-todos") {
@@ -112,6 +121,9 @@ function displayPokemonList(pokemons) {
 <<<<<<< HEAD:main.js
 =======
     
+<<<<<<< HEAD:main.js
+>>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
+=======
 >>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
     // Filtrar por nombre si hay texto en la búsqueda
     const textoBusqueda = barraBusqueda.value.toLowerCase();
@@ -123,6 +135,9 @@ function displayPokemonList(pokemons) {
 <<<<<<< HEAD:main.js
 =======
     
+<<<<<<< HEAD:main.js
+>>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
+=======
 >>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
     // Mostrar Pokémon filtrados
     pokemonsFiltrados.forEach(pokemon => {
@@ -133,6 +148,9 @@ function displayPokemonList(pokemons) {
 <<<<<<< HEAD:main.js
 =======
     
+<<<<<<< HEAD:main.js
+>>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
+=======
 >>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
     // Mostrar mensaje si no hay resultados
     if (pokemonsFiltrados.length === 0) {
@@ -302,6 +320,9 @@ function updateHomePageProgress(total, percentage) {
     if (progressBar) progressBar.style.width = `${percentage}%`;
     if (porcentajeText) porcentajeText.textContent = `${Math.round(percentage)}% completado`;
     if (contadorCartas) contadorCartas.textContent = `Tienes ${total} de ${TOTAL_POKEMON} Pokémon`;
+<<<<<<< HEAD:main.js
+>>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
+=======
 >>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
 }
 
