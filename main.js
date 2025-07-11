@@ -14,6 +14,7 @@ const URL = "https://pokeapi.co/api/v2/pokemon/";
 const TOTAL_POKEMON = 150;
 const CARTAS_POR_SOBRE = 6;
 
+<<<<<<< HEAD:main.js
 window.storedCards = JSON.parse(localStorage.getItem('pokemonCards')) || [];
 window.pokemonData = [];
 let filtroActivo = "ver-todos";
@@ -27,7 +28,35 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!window.pokemonData || window.pokemonData.length === 0) {
             loadAllPokemon();
         }
+=======
+let storedCards = JSON.parse(localStorage.getItem('pokemonCards')) || [];
+let pokemonData = [];
+let filtroActivo = "ver-todos";
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Inicialización común
+    if (storedCards.length === 0) {
+        unlockRandomPokemon(10);
     }
+    
+    // Si estamos en la Pokédex
+    if (document.getElementById('listaPokemon')) {
+        loadAllPokemon();
+        setupEventListeners();
+    }
+    
+    // Si estamos en la página de inicio
+    if (document.querySelector('.pagina-inicio')) {
+        const progressData = JSON.parse(localStorage.getItem('collectionProgress')) || {
+            total: storedCards.length,
+            percentage: (storedCards.length / TOTAL_POKEMON) * 100
+        };
+        updateHomePageProgress(progressData.total, progressData.percentage);
+>>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
+    }
+    
+    // Actualizar progreso en cualquier caso
+    updateProgress();
 });
 
 // Función principal de inicialización (osea si es primera vez que usas la app empiezas con 10 cartas desbloqueadas)
@@ -66,13 +95,24 @@ function displayPokemonList(pokemons) {
     const listaPokemon = document.querySelector('#listaPokemon');
     if (!listaPokemon) return;
     listaPokemon.innerHTML = '';
+<<<<<<< HEAD:main.js
     let pokemonsFiltrados = [...pokemons];
+=======
+    
+    // Aplicar filtros combinados
+    let pokemonsFiltrados = [...pokemons];
+    
+>>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
     // Filtrar por tipo si no es "ver-todos"
     if (filtroActivo !== "ver-todos") {
         pokemonsFiltrados = pokemonsFiltrados.filter(pokemon => 
             pokemon.types.some(t => t.type.name.includes(filtroActivo))
         );
     }
+<<<<<<< HEAD:main.js
+=======
+    
+>>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
     // Filtrar por nombre si hay texto en la búsqueda
     const textoBusqueda = barraBusqueda.value.toLowerCase();
     if (textoBusqueda) {
@@ -80,12 +120,20 @@ function displayPokemonList(pokemons) {
             pokemon.name.toLowerCase().includes(textoBusqueda)
         );
     }
+<<<<<<< HEAD:main.js
+=======
+    
+>>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
     // Mostrar Pokémon filtrados
     pokemonsFiltrados.forEach(pokemon => {
         const isUnlocked = storedCards.includes(pokemon.id);
         const pokemonElement = createPokemonCard(pokemon, isUnlocked);
         listaPokemon.appendChild(pokemonElement);
     });
+<<<<<<< HEAD:main.js
+=======
+    
+>>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
     // Mostrar mensaje si no hay resultados
     if (pokemonsFiltrados.length === 0) {
         listaPokemon.innerHTML = '<div class="sin-resultados">No se encontraron Pokémon</div>';
@@ -223,8 +271,38 @@ function updateProgress() {
     const total = storedCards.length;
     const percentage = (total / TOTAL_POKEMON) * 100;
     
+<<<<<<< HEAD:main.js
     progressFill.style.width = `${percentage}%`;
     progressText.textContent = `${total}/${TOTAL_POKEMON}`;
+=======
+    if (progressFill && progressText) {
+        progressFill.style.width = `${percentage}%`;
+        progressText.textContent = `${total}/${TOTAL_POKEMON}`;
+    }
+    
+    //Guardar progreso en localStorage para la página de inicio
+    localStorage.setItem('collectionProgress', JSON.stringify({
+        total: total,
+        percentage: percentage,
+        unlocked: [...storedCards]
+    }));
+    
+    //Actualizar página de inicio si está abierta
+    if (document.querySelector('.pagina-inicio')) {
+        updateHomePageProgress(total, percentage);
+    }
+}
+
+// Función para actualizar la página de inicio
+function updateHomePageProgress(total, percentage) {
+    const progressBar = document.getElementById('barra-progreso-inicio');
+    const porcentajeText = document.getElementById('porcentaje-completado');
+    const contadorCartas = document.getElementById('contador-cartas');
+    
+    if (progressBar) progressBar.style.width = `${percentage}%`;
+    if (porcentajeText) porcentajeText.textContent = `${Math.round(percentage)}% completado`;
+    if (contadorCartas) contadorCartas.textContent = `Tienes ${total} de ${TOTAL_POKEMON} Pokémon`;
+>>>>>>> parent of a0bfcc0 (add repeticiones):shared/js/main.js
 }
 
 function filterPokemonByType(type) {
