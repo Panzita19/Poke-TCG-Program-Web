@@ -1,5 +1,5 @@
 // trade.js
-const WEBSOCKET_SERVER_URL = "wss://[tu-proyecto].onrender.com"; // Cambia esto por tu URL de Render
+const WEBSOCKET_SERVER_URL = "wss://poke-tcg-websocket-server.onrender.com"; // URL de tu servidor en Render
 
 let ws;
 let myId = null;
