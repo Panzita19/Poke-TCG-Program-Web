@@ -1,3 +1,39 @@
+/* Mini-card styles for intercambio */
+.mini-card {
+  display: inline-block;
+  vertical-align: top;
+  width: 110px;
+  margin: 6px;
+  padding: 6px;
+  border-radius: 8px;
+  background: #f8f8f8;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border 0.2s;
+}
+.mini-card.selected {
+  border: 2px solid #4caf50;
+  background: #eaffea;
+}
+.mini-card-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin-bottom: 4px;
+}
+.mini-card-name {
+  display: block;
+  font-size: 0.95em;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+.mini-card-types {
+  display: block;
+  font-size: 0.8em;
+  color: #888;
+}
 /* Estilos específicos para la sección de intercambio */
 section#intercambio {
     max-width: 1200px;
