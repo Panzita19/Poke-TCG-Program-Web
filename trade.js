@@ -32,36 +32,28 @@ function connectWebSocket() {
 
   ws.onmessage = (event) => {
     const msg = JSON.parse(event.data);
-    switch (msg.type) {
-      case 'userList':
-        users = msg.users.filter(u => u.name !== myUsername);
-        updateUserList();
-        break;
-      case 'requestUserCards':
-        ws.send(JSON.stringify({
-          type: 'sendUserCards',
-          senderId: msg.requesterId,
-          cards: storedCards
-        }));
-        break;
-      case 'sendUserCards':
-        if (msg.userId === selectedUserId) {
-          theirCards = msg.cards;
-          renderTheirCards();
-        }
-        break;
-      case 'tradeProposal':
-        showTradeModal(msg);
-        break;
-      case 'tradeConfirmed':
-        handleTradeResult(msg, true);
-        break;
-      case 'tradeRejected':
-        handleTradeResult(msg, false);
-        break;
-      case 'error':
-        alert(msg.message);
-        break;
+    if (msg.type === 'userList') {
+      users = msg.users.filter(u => u.name !== myUsername);
+      updateUserList();
+    } else if (msg.type === 'requestUserCards') {
+      ws.send(JSON.stringify({
+        type: 'sendUserCards',
+        senderId: msg.requesterId,
+        cards: storedCards
+      }));
+    } else if (msg.type === 'sendUserCards') {
+      if (msg.userId === selectedUserId) {
+        theirCards = msg.cards;
+        renderTheirCards();
+      }
+    } else if (msg.type === 'tradeProposal') {
+      showTradeModal(msg);
+    } else if (msg.type === 'tradeConfirmed') {
+      handleTradeResult(msg, true);
+    } else if (msg.type === 'tradeRejected') {
+      handleTradeResult(msg, false);
+    } else if (msg.type === 'error') {
+      alert(msg.message);
     }
   };
 
@@ -103,8 +95,12 @@ function renderMyCards() {
     const card = pokemonData.find(p => p.id == cardId);
     if (!card) return;
     const div = document.createElement('div');
-    div.className = 'card' + (selectedMyCard == cardId ? ' selected' : '');
-    div.textContent = card.name;
+    div.className = 'mini-card' + (selectedMyCard == cardId ? ' selected' : '');
+    div.innerHTML = `
+      <img src="${card.sprites?.other['official-artwork'].front_default}" alt="${card.name}" class="mini-card-img" />
+      <span class="mini-card-name">${card.name}</span>
+      <span class="mini-card-types">${card.types.map(t => t.type.name).join(', ')}</span>
+    `;
     div.onclick = () => {
       selectedMyCard = cardId;
       renderMyCards();
@@ -121,8 +117,12 @@ function renderTheirCards() {
     const card = pokemonData.find(p => p.id == cardId);
     if (!card) return;
     const div = document.createElement('div');
-    div.className = 'card' + (selectedTheirCard == cardId ? ' selected' : '');
-    div.textContent = card.name;
+    div.className = 'mini-card' + (selectedTheirCard == cardId ? ' selected' : '');
+    div.innerHTML = `
+      <img src="${card.sprites?.other['official-artwork'].front_default}" alt="${card.name}" class="mini-card-img" />
+      <span class="mini-card-name">${card.name}</span>
+      <span class="mini-card-types">${card.types.map(t => t.type.name).join(', ')}</span>
+    `;
     div.onclick = () => {
       selectedTheirCard = cardId;
       renderTheirCards();

@@ -351,12 +351,16 @@ function unlockRandomPokemon(count) {
 }
 
 function showLoading(show) {
+    const listaPokemon = document.querySelector('#listaPokemon');
+    if (!listaPokemon) return;
     if (show) {
         listaPokemon.innerHTML = '<div class="loading">Cargando Pokémon...</div>';
     }
 }
 
 function showError() {
+    const listaPokemon = document.querySelector('#listaPokemon');
+    if (!listaPokemon) return;
     listaPokemon.innerHTML = '<div class="error">Error al cargar los Pokémon. Intenta recargar la página.</div>';
 }
 
