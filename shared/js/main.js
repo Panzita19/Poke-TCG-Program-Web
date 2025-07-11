@@ -19,7 +19,28 @@ let pokemonData = [];
 let filtroActivo = "ver-todos";
 
 document.addEventListener('DOMContentLoaded', () => {
-    initApp();
+    // Inicialización común
+    if (storedCards.length === 0) {
+        unlockRandomPokemon(10);
+    }
+    
+    // Si estamos en la Pokédex
+    if (document.getElementById('listaPokemon')) {
+        loadAllPokemon();
+        setupEventListeners();
+    }
+    
+    // Si estamos en la página de inicio
+    if (document.querySelector('.pagina-inicio')) {
+        const progressData = JSON.parse(localStorage.getItem('collectionProgress')) || {
+            total: storedCards.length,
+            percentage: (storedCards.length / TOTAL_POKEMON) * 100
+        };
+        updateHomePageProgress(progressData.total, progressData.percentage);
+    }
+    
+    // Actualizar progreso en cualquier caso
+    updateProgress();
 });
 
 // Función principal de inicialización (osea si es primera vez que usas la app empiezas con 10 cartas desbloqueadas)
@@ -129,8 +150,13 @@ function createPokemonCard(pokemon, isUnlocked) {
     if (isUnlocked) {
         card.addEventListener('click', () => showPokemonDetails(pokemon));
         card.style.cursor = 'pointer';
+
+        // Efecto de rotación en la imagen de la carta
+        const img = card.querySelector('.pokemon-imagen img');
+        if (img) {
+            addCardRotationEffect(img);
+        }
     }
-    
     return card;
 }
 
@@ -143,6 +169,9 @@ function showPokemonDetails(pokemon) {
     const modalImage = document.getElementById('modal-pokemon-image');
     modalImage.src = imgUrl;
     modalImage.alt = pokemon.name;
+
+    // Efecto de rotación en la imagen del modal
+    addCardRotationEffect(modalImage);
     
     const typesContainer = document.getElementById('modal-pokemon-types');
     typesContainer.innerHTML = pokemon.types.map(type => `
@@ -186,12 +215,31 @@ function setupModalEvents() {
     });
 }
 
+// Efecto de rotación 3D en imágenes de cartas
+function addCardRotationEffect(img) {
+    let rect;
+    img.addEventListener('mouseenter', () => {
+        rect = img.getBoundingClientRect();
+    });
+    img.addEventListener('mousemove', (e) => {
+        if (!rect) rect = img.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        const xOffset = (x - 0.5) * 2; // -1 a 1
+        const yOffset = (y - 0.5) * 2; // -1 a 1
+        const maxDeg = 18;
+        img.style.transform = `perspective(600px) rotateY(${xOffset*maxDeg}deg) rotateX(${-yOffset*maxDeg}deg)`;
+    });
+    img.addEventListener('mouseleave', () => {
+        img.style.transform = 'none';
+    });
+}
+
 //actualizas la barrita de progreso
 function updateProgress() {
     const total = storedCards.length;
     const percentage = (total / TOTAL_POKEMON) * 100;
     
-<<<<<<< HEAD:shared/js/main.js
     if (progressFill && progressText) {
         progressFill.style.width = `${percentage}%`;
         progressText.textContent = `${total}/${TOTAL_POKEMON}`;
@@ -219,10 +267,6 @@ function updateHomePageProgress(total, percentage) {
     if (progressBar) progressBar.style.width = `${percentage}%`;
     if (porcentajeText) porcentajeText.textContent = `${Math.round(percentage)}% completado`;
     if (contadorCartas) contadorCartas.textContent = `Tienes ${total} de ${TOTAL_POKEMON} Pokémon`;
-=======
-    progressFill.style.width = `${percentage}%`;
-    progressText.textContent = `${total}/${TOTAL_POKEMON}`;
->>>>>>> parent of 5dc0963 (add proyecto sin websocket):main.js
 }
 
 function filterPokemonByType(type) {
@@ -232,22 +276,96 @@ function filterPokemonByType(type) {
 
 function openBoosterPack() {
     const newCards = getRandomNewCards(CARTAS_POR_SOBRE);
-    
     if (newCards.length === 0) {
         alert('¡Ya tienes todas las cartas!');
         return;
     }
-    
     newCards.forEach(id => {
         if (!storedCards.includes(id)) {
             storedCards.push(id);
         }
     });
-    
     localStorage.setItem('pokemonCards', JSON.stringify(storedCards));
     updateProgress();
     displayPokemonList(pokemonData);
-    alert(`¡Has obtenido ${newCards.length} nuevas cartas!`);
+    showBoosterModal(newCards);
+}
+
+// Modal para mostrar las cartas obtenidas en el sobre
+function showBoosterModal(cardIds) {
+    let modal = document.getElementById('booster-modal');
+    if (!modal) {
+        // Si no existe el div, lo creamos (fallback)
+        modal = document.createElement('div');
+        modal.id = 'booster-modal';
+        modal.className = 'booster-modal';
+        document.body.appendChild(modal);
+    }
+    // Limpiar contenido anterior
+    modal.innerHTML = '';
+
+    // Modal content
+    const content = document.createElement('div');
+    content.className = 'booster-modal-content';
+
+    // Título
+    const title = document.createElement('h2');
+    title.textContent = '¡Nuevas cartas obtenidas!';
+    content.appendChild(title);
+
+    // Vista previa de cartas
+    const preview = document.createElement('div');
+    preview.className = 'booster-cards-preview';
+    cardIds.forEach(id => {
+        const poke = pokemonData.find(p => p.id === id);
+        if (poke) {
+            const card = document.createElement('div');
+            card.className = 'booster-card';
+            card.innerHTML = `
+                <img src="${poke.sprites.other['official-artwork'].front_default}" alt="${poke.name}" loading="lazy">
+                <p class="booster-card-name">${poke.name}</p>
+            `;
+            preview.appendChild(card);
+        }
+    });
+    content.appendChild(preview);
+
+    // Botones
+    const btns = document.createElement('div');
+    btns.className = 'booster-btns';
+
+    const btnAceptar = document.createElement('button');
+    btnAceptar.className = 'booster-btn aceptar';
+    btnAceptar.textContent = 'Aceptar';
+    btnAceptar.onclick = () => {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    };
+
+    const btnAbrirOtro = document.createElement('button');
+    btnAbrirOtro.className = 'booster-btn abrir-otro';
+    btnAbrirOtro.textContent = 'Abrir otro sobre';
+    btnAbrirOtro.onclick = () => {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        setTimeout(() => openBoosterPack(), 200); // Pequeño delay para evitar doble modal
+    };
+
+    btns.appendChild(btnAceptar);
+    btns.appendChild(btnAbrirOtro);
+    content.appendChild(btns);
+
+    // Cerrar modal al hacer click fuera del contenido
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    };
+
+    modal.appendChild(content);
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
 }
 
 function getRandomNewCards(count) {
@@ -302,13 +420,16 @@ function setupEventListeners() {
         barraBusqueda.value = "";
         displayPokemonList(pokemonData);
     });
-    
-    btnIntercambiar.addEventListener('click', () => {
-        alert('Funcionalidad de intercambio en desarrollo');
-    });
-    
+        
     setupModalEvents();
 
     barraBusqueda.addEventListener("input", filtrarPorNombre);
     botonBuscar.addEventListener("click", filtrarPorNombre);
+}
+// Reinicia la colección de cartas a 0 y actualiza la vista
+function resetColeccion() {
+    storedCards = [];
+    localStorage.setItem('pokemonCards', JSON.stringify(storedCards));
+    updateProgress();
+    displayPokemonList(pokemonData);
 }
