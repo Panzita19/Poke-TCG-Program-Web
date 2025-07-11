@@ -129,8 +129,13 @@ function createPokemonCard(pokemon, isUnlocked) {
     if (isUnlocked) {
         card.addEventListener('click', () => showPokemonDetails(pokemon));
         card.style.cursor = 'pointer';
+
+        // Efecto de rotación en la imagen de la carta
+        const img = card.querySelector('.pokemon-imagen img');
+        if (img) {
+            addCardRotationEffect(img);
+        }
     }
-    
     return card;
 }
 
@@ -143,6 +148,9 @@ function showPokemonDetails(pokemon) {
     const modalImage = document.getElementById('modal-pokemon-image');
     modalImage.src = imgUrl;
     modalImage.alt = pokemon.name;
+
+    // Efecto de rotación en la imagen del modal
+    addCardRotationEffect(modalImage);
     
     const typesContainer = document.getElementById('modal-pokemon-types');
     typesContainer.innerHTML = pokemon.types.map(type => `
@@ -183,6 +191,26 @@ function setupModalEvents() {
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
+    });
+}
+
+// Efecto de rotación 3D en imágenes de cartas
+function addCardRotationEffect(img) {
+    let rect;
+    img.addEventListener('mouseenter', () => {
+        rect = img.getBoundingClientRect();
+    });
+    img.addEventListener('mousemove', (e) => {
+        if (!rect) rect = img.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        const xOffset = (x - 0.5) * 2; // -1 a 1
+        const yOffset = (y - 0.5) * 2; // -1 a 1
+        const maxDeg = 18;
+        img.style.transform = `perspective(600px) rotateY(${xOffset*maxDeg}deg) rotateX(${-yOffset*maxDeg}deg)`;
+    });
+    img.addEventListener('mouseleave', () => {
+        img.style.transform = 'none';
     });
 }
 
