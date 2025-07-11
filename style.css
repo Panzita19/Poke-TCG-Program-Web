@@ -1,3 +1,103 @@
+/* Estilos para el modal de sobres */
+.booster-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.booster-modal-content {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    padding: 32px 24px 24px 24px;
+    max-width: 480px;
+    width: 90vw;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: boosterFadeIn 0.3s;
+}
+
+@keyframes boosterFadeIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.booster-modal-content h2 {
+    color: #e3350d;
+    margin-bottom: 18px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.booster-cards-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.booster-card {
+    background: #f6f8fc;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    padding: 10px 8px 6px 8px;
+    width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.15s;
+}
+.booster-card img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    margin-bottom: 6px;
+}
+.booster-card-name {
+    font-size: 0.95rem;
+    color: #333;
+    font-weight: 500;
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.booster-btns {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    margin-top: 8px;
+}
+.booster-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: #e3350d;
+    color: #fff;
+    transition: background 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+.booster-btn.aceptar {
+    background: #2a75bb;
+}
+.booster-btn.abrir-otro {
+    background: #e3350d;
+}
+.booster-btn:hover {
+    filter: brightness(1.08);
+}
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
