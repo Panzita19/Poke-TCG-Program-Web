@@ -267,24 +267,6 @@ function updateHomePageProgress(total, percentage) {
     if (progressBar) progressBar.style.width = `${percentage}%`;
     if (porcentajeText) porcentajeText.textContent = `${Math.round(percentage)}% completado`;
     if (contadorCartas) contadorCartas.textContent = `Tienes ${total} de ${TOTAL_POKEMON} Pokémon`;
-    
-    // Actualizar últimas cartas (mostrar las 3 más recientes)
-    const latestCards = storedCards.slice(-3).reverse();
-    const listaUltimasCartas = document.getElementById('lista-ultimas-cartas');
-    
-    if (listaUltimasCartas && latestCards.length > 0) {
-        listaUltimasCartas.innerHTML = latestCards.map(id => {
-            const pokemon = pokemonData.find(p => p.id === id);
-            return pokemon ? `
-                <div class="carta-reciente">
-                    <img src="${pokemon.sprites.other['official-artwork'].front_default}" 
-                        alt="${pokemon.name}"
-                        title="${pokemon.name}">
-                    <span>#${pokemon.id.toString().padStart(3, '0')}</span>
-                </div>
-            ` : '';
-        }).join('');
-    }
 }
 
 function filterPokemonByType(type) {
