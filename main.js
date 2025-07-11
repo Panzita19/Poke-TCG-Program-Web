@@ -14,12 +14,20 @@ const URL = "https://pokeapi.co/api/v2/pokemon/";
 const TOTAL_POKEMON = 150;
 const CARTAS_POR_SOBRE = 6;
 
-let storedCards = JSON.parse(localStorage.getItem('pokemonCards')) || [];
-let pokemonData = [];
+window.storedCards = JSON.parse(localStorage.getItem('pokemonCards')) || [];
+window.pokemonData = [];
 let filtroActivo = "ver-todos";
 
 document.addEventListener('DOMContentLoaded', () => {
-    initApp();
+    // Solo ejecuta la lógica principal si existe #listaPokemon (página principal)
+    if (document.querySelector('#listaPokemon')) {
+        initApp();
+    } else {
+        // Si estamos en intercambio.html, solo carga los datos si no están cargados
+        if (!window.pokemonData || window.pokemonData.length === 0) {
+            loadAllPokemon();
+        }
+    }
 });
 
 // Función principal de inicialización (osea si es primera vez que usas la app empiezas con 10 cartas desbloqueadas)
@@ -55,18 +63,16 @@ async function loadAllPokemon() {
 }
 
 function displayPokemonList(pokemons) {
+    const listaPokemon = document.querySelector('#listaPokemon');
+    if (!listaPokemon) return;
     listaPokemon.innerHTML = '';
-    
-    // Aplicar filtros combinados
     let pokemonsFiltrados = [...pokemons];
-    
     // Filtrar por tipo si no es "ver-todos"
     if (filtroActivo !== "ver-todos") {
         pokemonsFiltrados = pokemonsFiltrados.filter(pokemon => 
             pokemon.types.some(t => t.type.name.includes(filtroActivo))
         );
     }
-    
     // Filtrar por nombre si hay texto en la búsqueda
     const textoBusqueda = barraBusqueda.value.toLowerCase();
     if (textoBusqueda) {
@@ -74,14 +80,12 @@ function displayPokemonList(pokemons) {
             pokemon.name.toLowerCase().includes(textoBusqueda)
         );
     }
-    
     // Mostrar Pokémon filtrados
     pokemonsFiltrados.forEach(pokemon => {
         const isUnlocked = storedCards.includes(pokemon.id);
         const pokemonElement = createPokemonCard(pokemon, isUnlocked);
         listaPokemon.appendChild(pokemonElement);
     });
-    
     // Mostrar mensaje si no hay resultados
     if (pokemonsFiltrados.length === 0) {
         listaPokemon.innerHTML = '<div class="sin-resultados">No se encontraron Pokémon</div>';

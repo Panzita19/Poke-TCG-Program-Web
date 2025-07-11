@@ -14,10 +14,19 @@ function connectWebSocket() {
   ws = new WebSocket(WEBSOCKET_SERVER_URL);
 
   ws.onopen = () => {
+    // Tomar el nombre del input
+    const input = document.getElementById('usuario-origen');
+    myUsername = input.value.trim() || localStorage.getItem('username') || '';
     if (!myUsername) {
-      myUsername = prompt("Ingresa tu nombre de usuario:");
-      localStorage.setItem('username', myUsername);
+      input.focus();
+      input.addEventListener('change', () => {
+        myUsername = input.value.trim();
+        localStorage.setItem('username', myUsername);
+        ws.send(JSON.stringify({ type: 'register', username: myUsername }));
+      }, { once: true });
+      return;
     }
+    localStorage.setItem('username', myUsername);
     ws.send(JSON.stringify({ type: 'register', username: myUsername }));
   };
 
@@ -198,9 +207,18 @@ function handleTradeResult(data, accepted) {
   updateTradeButton();
 }
 
+function waitForPokemonData(callback) {
+  if (window.pokemonData && window.pokemonData.length > 0) {
+    callback();
+  } else {
+    setTimeout(() => waitForPokemonData(callback), 100);
+  }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
-  window.storedCards = JSON.parse(localStorage.getItem('storedCards') || '[]');
-  renderMyCards();
-  connectWebSocket();
-  updateTradeButton();
+  waitForPokemonData(() => {
+    renderMyCards();
+    connectWebSocket();
+    updateTradeButton();
+  });
 });
