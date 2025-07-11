@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cliente WebSocket</title>
+    <link rel="stylesheet" href="style.css"> <!-- Asumiendo que los estilos están aquí -->
+</head>
+<body>
+    <header>
+        <h1>Cliente WebSocket</h1>
+        <div class="contenedor-busqueda">
+            <div>
+                <label for="usuario">Usuario: </label>
+                <input type="text" id="usuario" placeholder="Introduce tu nombre" class="input-busqueda">
+                <button id="registrar" class="btn btn-header">Registrar</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div id="mensaje" class="pokemon-todos"></div>
+    </main>
+
+    <nav class="bottom-nav">
+        <button class="nav-btn" id="btn-volver">
+            <i class="icon">←</i> Volver
+        </button>
+    </nav>
+
+    <script>
+        // Conectar al servidor WebSocket
+        const ws = new WebSocket('ws://localhost:8080');
+
+        // Elementos del DOM
+        const mensajeDiv = document.getElementById('mensaje');
+        const inputUsuario = document.getElementById('usuario');
+        const botonRegistrar = document.getElementById('registrar');
+
+        let usuarioActual = null;
+
+        // Función para mostrar los mensajes en el DOM
+        function mostrarMensaje(msg) {
+            mensajeDiv.textContent = msg;
+        }
+
+        // Cuando el WebSocket se conecta
+        ws.onopen = () => {
+            console.log('Conexión WebSocket establecida.');
+        };
+
+        // Cuando el WebSocket recibe un mensaje
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log('Mensaje recibido del servidor:', data);
+
+            switch (data.tipo) {
+                case 'mis_cartas':
+                    mostrarMensaje('Tus cartas: ' + data.cartas.join(', '));
+                    break;
+                case 'intercambio_exitoso':
+                    mostrarMensaje(data.mensaje);
+                    break;
+                case 'usuarios_conectados':
+                    mostrarMensaje('Usuarios conectados: ' + data.usuarios.join(', '));
+                    break;
+            }
+        };
+
+        // Cuando el WebSocket se cierra
+        ws.onclose = () => {
+            console.log('Conexión WebSocket cerrada.');
+        };
+
+        // Cuando ocurre un error en la conexión WebSocket
+        ws.onerror = (error) => {
+            console.error('Error en WebSocket:', error);
+        };
+
+        // Registrar un usuario en el servidor
+        botonRegistrar.onclick = () => {
+            const usuario = inputUsuario.value.trim();
+            if (usuario && !usuarioActual) {
+                usuarioActual = usuario;
+                // Enviar mensaje de registro al servidor
+                ws.send(JSON.stringify({ tipo: 'registro', usuario }));
+            } else {
+                mostrarMensaje('Por favor ingresa un nombre de usuario.');
+            }
+        };
+    </script>
+</body>
+</html>
