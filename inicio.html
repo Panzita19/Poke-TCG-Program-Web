@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokéTCG Pocket - Inicio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="inicioCSS.css">
+    <link rel="icon" href="https://e7.pngegg.com/pngimages/906/501/png-clipart-pokeball-pokeball-thumbnail.png">
+</head>
+<body>
+    <div class="pagina-inicio">
+        <header class="cabecera-inicio">
+            <img src="https://www.freeiconspng.com/thumbs/pikachu-transparent/pikachu-transparent-clipart-4.png" alt="PokéTCG Pocket" class="logo">
+            <h1>Tu Colección Pokémon</h1>
+        </header>
+
+        <main class="contenido-inicio">
+            <div class="tarjeta-entrenador">
+                <div class="perfil-entrenador">
+                    <div class="foto-perfil">
+                        <img src="https://e7.pngegg.com/pngimages/906/501/png-clipart-pokeball-pokeball-thumbnail.png" alt="Perfil Entrenador">
+                    </div>
+                    <div class="info-entrenador">
+                        <h2 id="mensaje-bienvenida">Bienvenido, Entrenador!</h2>
+                        <p id="contador-cartas">Cargando tu progreso...</p>
+                    </div>
+                </div>
+
+                <div class="progreso-global">
+                    <div class="barra-progreso-container">
+                        <div class="barra-progreso" id="barra-progreso-inicio"></div>
+                    </div>
+                    <p id="porcentaje-completado">0% completado</p>
+                </div>
+            </div>
+
+            <div class="acciones-principales">
+                <a href="index.html" class="boton-accion principal">
+                    <img src="https://i.redd.it/gen-1-pokedex-v0-7zhs7m4okakd1.png?width=250&format=png&auto=webp&s=c55741f08f4e59922c10e504f5658e698d46dc25" alt="Pokedex">
+                    <span>Continuar Colección</span>
+                </a>
+            </div>
+
+            <div class="ultimas-cartas" id="ultimas-cartas">
+                <h3>Tus últimas capturas</h3>
+                <div class="lista-ultimas-cartas" id="lista-ultimas-cartas">
+                    <!-- Se llenará dinámicamente -->
+                </div>
+            </div>
+        </main>
+
+        <footer class="pie-pagina">
+            <p>© 2025 CardDex Studio - Proyecto Pokémon TCG</p>
+        </footer>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
