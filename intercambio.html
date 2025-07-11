@@ -111,4 +111,25 @@
     </nav>
     <script src="intercambio.js"></script>
 </body>
-</html>
+    <!-- ...tu HTML existente... -->
+    <ul id="lista-usuarios"></ul>
+    <select id="usuario-destino"></select>
+    <div id="tus-cartas"></div>
+    <div id="cartas-destino"></div>
+    <button id="boton-intercambiar" disabled>Confirmar Intercambio</button>
+
+    <!-- Modal para propuestas de intercambio -->
+    <div id="modal-intercambio" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+      <div style="background:#fff; padding:2em; border-radius:8px; max-width:350px; margin:auto;">
+        <div class="modal-body"></div>
+        <button class="aceptar">Aceptar</button>
+        <button class="rechazar">Rechazar</button>
+      </div>
+    </div>
+
+    <!-- Modal para éxito o rechazo -->
+    <div id="modal-exito" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+      <div style="background:#fff; padding:2em; border-radius:8px; max-width:350px; margin:auto;">
+        <div class="modal-body"></div>
+      </div>
+    </div>
