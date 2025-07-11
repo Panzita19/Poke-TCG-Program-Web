@@ -272,11 +272,7 @@ function setupEventListeners() {
         barraBusqueda.value = "";
         displayPokemonList(pokemonData);
     });
-    
-    btnIntercambiar.addEventListener('click', () => {
-        alert('Funcionalidad de intercambio en desarrollo');
-    });
-    
+        
     setupModalEvents();
 
     barraBusqueda.addEventListener("input", filtrarPorNombre);
